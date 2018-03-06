@@ -12,6 +12,8 @@ namespace Parser
         static void Main(string[] args)
         {
             var url = "https://www.tvn24.pl/rss.html";
+            var urls = GetChannelUrls(url);
+            var titles = GetChannelNames(url);
         }
 
         private static void ParseFeed(string feedUrl)
