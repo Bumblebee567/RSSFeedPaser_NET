@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using HtmlAgilityPack;
 using System.Xml;
+using System.Text.RegularExpressions;
 
 namespace Parser
 {
@@ -32,13 +33,17 @@ namespace Parser
                 rssSubNode = node.SelectSingleNode("pubDate");
                 var pubdate = rssSubNode.InnerText;
                 rssSubNode = node.SelectSingleNode("description");
-                var description = rssSubNode.InnerText;
+                var desc = rssSubNode.InnerText;
+                var img = Regex.Match(desc, @"<.+?>");
+                var description = Regex.Replace(desc, @"<.+?>", String.Empty).TrimStart().TrimEnd();
 
                 content.AppendLine(title);
                 content.AppendLine(link);
                 content.AppendLine(pubdate);
                 content.AppendLine(description);
+                content.AppendLine(img.ToString());
             }
+            Console.WriteLine(content.ToString());
         }
 
         static List<string> GetChannelNames(string url)
