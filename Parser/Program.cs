@@ -5,6 +5,8 @@ using System.Text;
 using HtmlAgilityPack;
 using System.Xml;
 using System.Text.RegularExpressions;
+using System.Xml.Linq;
+using System.IO;
 
 namespace Parser
 {
@@ -15,35 +17,38 @@ namespace Parser
             var url = "https://www.tvn24.pl/rss.html";
             var urls = GetChannelUrls(url);
             var titles = GetChannelNames(url);
+
+            ParseFeed(urls[2]);
         }
 
         private static void ParseFeed(string feedUrl)
         {
-            XmlDocument rss = new XmlDocument();
-            rss.Load(feedUrl);
-            XmlNodeList rssNodes = rss.SelectNodes("rss/channel/item");
-            StringBuilder content = new StringBuilder();
-
-            foreach (XmlNode node in rssNodes)
+            XDocument rssDocument = XDocument.Load(feedUrl);
+            var feeds = rssDocument.Descendants("item");
+            StringBuilder sb = new StringBuilder();
+            foreach (var feed in feeds)
             {
-                XmlNode rssSubNode = node.SelectSingleNode("title");
-                var title = rssSubNode.InnerText;
-                rssSubNode = node.SelectSingleNode("link");
-                var link = rssSubNode.InnerText;
-                rssSubNode = node.SelectSingleNode("pubDate");
-                var pubdate = rssSubNode.InnerText;
-                rssSubNode = node.SelectSingleNode("description");
-                var desc = rssSubNode.InnerText;
-                var img = Regex.Match(desc, @"<.+?>");
-                var description = Regex.Replace(desc, @"<.+?>", String.Empty).TrimStart().TrimEnd();
+                var title = feed.Element("title").Value;
+                var link = feed.Element("link").Value;
+                var pubdate = feed.Element("pubDate").Value;
+                var descH = feed.Element("description").Value;
+                var description = Regex.Replace(descH, @"<.+?>", String.Empty);
+                var img = Regex.Match(descH, @"<.+?>");
+                //var image = GetImageDirectUrl(img.ToString());
 
-                content.AppendLine(title);
-                content.AppendLine(link);
-                content.AppendLine(pubdate);
-                content.AppendLine(description);
-                content.AppendLine(img.ToString());
+                sb.AppendLine(title);
+                sb.AppendLine(link);
+                sb.AppendLine(pubdate);
+                sb.AppendLine(description.TrimStart().TrimEnd());
+                sb.AppendLine(img.ToString());
             }
-            Console.WriteLine(content.ToString());
+            Console.WriteLine(sb.ToString());
+        }
+
+        private static string GetImageDirectUrl(string imageHtml)
+        {
+
+            return imageHtml;
         }
 
         static List<string> GetChannelNames(string url)
