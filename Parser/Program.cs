@@ -18,7 +18,7 @@ namespace Parser
             var urls = GetChannelUrls(url);
             var titles = GetChannelNames(url);
 
-            ParseFeed(urls[2]);
+            ParseFeed(urls[0]);
         }
 
         private static void ParseFeed(string feedUrl)
@@ -34,21 +34,27 @@ namespace Parser
                 var descH = feed.Element("description").Value;
                 var description = Regex.Replace(descH, @"<.+?>", String.Empty);
                 var img = Regex.Match(descH, @"<.+?>");
-                //var image = GetImageDirectUrl(img.ToString());
+                var image = GetImageDirectUrl(img.ToString());
 
                 sb.AppendLine(title);
                 sb.AppendLine(link);
                 sb.AppendLine(pubdate);
                 sb.AppendLine(description.TrimStart().TrimEnd());
-                sb.AppendLine(img.ToString());
+                sb.AppendLine(image.ToString());
             }
             Console.WriteLine(sb.ToString());
         }
 
         private static string GetImageDirectUrl(string imageHtml)
         {
-
-            return imageHtml;
+            var str = imageHtml.Replace("<img src=\"", String.Empty)
+                .Replace("\"", String.Empty)
+                .Replace("/>", String.Empty)
+                .Replace("align=right", String.Empty)
+                .Replace("quality=80", "quality=100")
+                .Replace("50", "300")
+                .Replace("&amp;", "&");
+            return str;
         }
 
         static List<string> GetChannelNames(string url)
