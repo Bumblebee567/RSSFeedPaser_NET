@@ -18,7 +18,17 @@ namespace Parser
             var urls = GetChannelUrls(url);
             var titles = GetChannelNames(url);
 
-            ParseFeed(urls[0]);
+            for (int i = 0; i < urls.Count(); i++)
+            {
+                if (i != 4) //Channel 4 - not active
+                {
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    Console.WriteLine($"CHANNEL ID = {i}");
+                    Console.ResetColor();
+                    ParseFeed(urls[i]);
+                    Console.ReadKey();
+                }
+            }
         }
 
         private static void ParseFeed(string feedUrl)
@@ -30,21 +40,36 @@ namespace Parser
             {
                 var title = feed.Element("title").Value;
                 var link = feed.Element("link").Value;
-                var pubdate = feed.Element("pubDate").Value;
+                string pubdate = "";
+                if (feed.Element("pubDate") != null)
+                {
+                    pubdate = feed.Element("pubDate").Value;
+                }
                 var descH = feed.Element("description").Value;
                 var description = Regex.Replace(descH, @"<.+?>", String.Empty);
                 var img = Regex.Match(descH, @"<.+?>");
                 var image = GetImageDirectUrl(img.ToString());
 
-                sb.AppendLine(title);
+                if (title != "")
+                {
+                    sb.AppendLine(title);
+                }
                 sb.AppendLine(link);
-                sb.AppendLine(pubdate);
-                sb.AppendLine(description.TrimStart().TrimEnd());
-                sb.AppendLine(image.ToString());
+                if (pubdate != "")
+                {
+                    sb.AppendLine(pubdate);
+                }
+                if (description != "")
+                {
+                    sb.AppendLine(description.TrimStart().TrimEnd());
+                }
+                if (image != "")
+                {
+                    sb.AppendLine(image.ToString());
+                }
             }
             Console.WriteLine(sb.ToString());
         }
-
         private static string GetImageDirectUrl(string imageHtml)
         {
             var str = imageHtml.Replace("<img src=\"", String.Empty)
