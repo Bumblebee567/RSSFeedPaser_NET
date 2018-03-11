@@ -58,6 +58,7 @@
     <Compile Include="Channel.cs" />
     <Compile Include="DatabaseHelper.cs" />
     <Compile Include="Feed.cs" />
+    <Compile Include="FeedParserHelper.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RSSFeedDatabaseModel.cs" />

@@ -8,7 +8,7 @@ namespace Parser
 {
     class DatabaseHelper
     {
-        public static void AddChannelsToDatabase()
+        public static void AddChannelsToDatabase(string url)
         {
             
         }
@@ -16,7 +16,7 @@ namespace Parser
         {
 
         }
-        public static bool CheckIfChannelIsInDatabase(string channelUrl)
+        public static bool IsChannelInDatabase(string channelUrl)
         {
             bool checker;
             using (var context = new RSSFeedDatabaseModel())
@@ -32,7 +32,7 @@ namespace Parser
             }
             return checker;
         }
-        public static bool CheckIfFeedIsInDatabase(string feedUrl, string channelUrl)
+        public static bool IsFeedInDatabase(string feedUrl, string channelUrl)
         {
             bool checker = true;
             using (var context = new RSSFeedDatabaseModel())
