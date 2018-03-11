@@ -15,29 +15,22 @@ namespace Parser
             var url = "https://www.tvn24.pl/rss.html";
             var urls = GetChannelUrls(url);
             var titles = GetChannelNames(url);
-
-            for (int i = 0; i < urls.Count(); i++)
-            {
-                if (i != 4) //Channel 4 - not active
-                {
-                    Console.ForegroundColor = ConsoleColor.Yellow;
-                    Console.WriteLine($"CHANNEL ID = {i}");
-                    Console.ResetColor();
-                    ParseFeed(urls[i]);
-                    Console.ReadKey();
-                }
-            }
         }
 
-        private static void ParseFeed(string feedUrl)
+        private static void ParseFeed(string channelUrl)
         {
-            XDocument rssDocument = XDocument.Load(feedUrl);
+            XDocument rssDocument = XDocument.Load(channelUrl);
             var feeds = rssDocument.Descendants("item");
             StringBuilder sb = new StringBuilder();
             foreach (var feed in feeds)
             {
                 var title = feed.Element("title").Value;
                 var link = feed.Element("link").Value;
+                bool databaseChecker = DatabaseHelper.CheckIfFeedIsInDatabase(link);
+                if(databaseChecker == true)
+                {
+                    continue;
+                }
                 string pubdate = "";
                 if (feed.Element("pubDate") != null)
                 {
@@ -47,24 +40,6 @@ namespace Parser
                 var description = Regex.Replace(descH, @"<.+?>", String.Empty);
                 var img = Regex.Match(descH, @"<.+?>");
                 var image = GetImageDirectUrl(img.ToString());
-
-                if (title != "")
-                {
-                    sb.AppendLine(title);
-                }
-                sb.AppendLine(link);
-                if (pubdate != "")
-                {
-                    sb.AppendLine(pubdate);
-                }
-                if (description != "")
-                {
-                    sb.AppendLine(description.TrimStart().TrimEnd());
-                }
-                if (image != "")
-                {
-                    sb.AppendLine(image.ToString());
-                }
             }
             Console.WriteLine(sb.ToString());
         }
