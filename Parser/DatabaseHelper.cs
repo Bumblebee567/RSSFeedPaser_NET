@@ -10,7 +10,7 @@ namespace Parser
     {
         public static void SaveChannelsToDatabase()
         {
-
+            
         }
         public static void SaveFeedsToDatabase(string channelUrl)
         {
@@ -20,9 +20,23 @@ namespace Parser
         {
             return false;
         }
-        public static bool CheckIfFeedIsInDatabase(string feedUrl)
+        public static bool CheckIfFeedIsInDatabase(string feedUrl, string channelUrl)
         {
-            return true;
+            bool checker = false;
+            using (var context = new RSSFeedDatabaseModel())
+            {
+                var channel = context.Channel.Where(x => x.Address == channelUrl).First();
+                var feedsOnChannel = context.Feed.Where(x => x.ChannelID == channel.ChannelID);
+                foreach (var feed in feedsOnChannel)
+                {
+                    if(feed.Link == feedUrl)
+                    {
+                        checker = true;
+                        break;
+                    }
+                }
+            }
+            return checker;
         }
     }
 }
