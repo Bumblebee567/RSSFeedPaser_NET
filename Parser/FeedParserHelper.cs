@@ -10,29 +10,39 @@ namespace Parser
 {
     class FeedParserHelper
     {
-        public static void ParseFeed(string channelUrl)
+        public static List<Feed> ParseFeed(string channelUrl)
         {
+            List<Feed> parsedFeeds = new List<Feed>();
             XDocument rssDocument = XDocument.Load(channelUrl);
             var feeds = rssDocument.Descendants("item");
             foreach (var feed in feeds)
             {
-                var title = feed.Element("title").Value;
                 var link = feed.Element("link").Value;
                 bool databaseChecker = DatabaseHelper.IsFeedInDatabase(link, channelUrl);
                 if (databaseChecker == true)
                 {
                     continue;
                 }
+                var title = feed.Element("title").Value;
                 string pubdate = "";
                 if (feed.Element("pubDate") != null)
                 {
                     pubdate = feed.Element("pubDate").Value;
                 }
-                var descH = feed.Element("description").Value;
-                var description = Regex.Replace(descH, @"<.+?>", String.Empty);
-                var img = Regex.Match(descH, @"<.+?>");
-                var image = GetImageDirectUrl(img.ToString());
+                var descirptionInHtmlCode = feed.Element("description").Value;
+                var description = Regex.Replace(descirptionInHtmlCode, @"<.+?>", String.Empty).TrimStart();
+                var imageInHtmlCode = Regex.Match(descirptionInHtmlCode, @"<.+?>");
+                var image = GetImageDirectUrl(imageInHtmlCode.ToString());
+                parsedFeeds.Add(new Feed
+                {
+                    Title = title,
+                    Link = link,
+                    Date = pubdate,
+                    Description = description,
+                    Imagelink = image
+                });
             }
+            return parsedFeeds;
         }
         private static string GetImageDirectUrl(string imageHtml)
         {

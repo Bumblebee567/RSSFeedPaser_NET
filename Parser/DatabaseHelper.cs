@@ -56,11 +56,17 @@ namespace Parser
         }
         public static void AddFeedsToDatabase()
         {
+            List<Feed> feedsToAdd = new List<Feed>();
             using (var context = new RSSFeedDatabaseModel())
             {
                 foreach (var channel in context.Channel)
                 {
-
+                    feedsToAdd = FeedParserHelper.ParseFeed(channel.Address);
+                    for (int i = feedsToAdd.Count - 1; i >= 0; i++)
+                    {
+                        channel.Feed.Add(feedsToAdd[i]);
+                    }
+                    feedsToAdd.Clear();
                 }
             }
         }

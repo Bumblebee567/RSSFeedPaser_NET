@@ -13,7 +13,7 @@ namespace Parser
         static void Main(string[] args)
         {
             var url = "https://www.tvn24.pl/rss.html";
-            DatabaseHelper.AddChannelsToDatabase(url);
+            var ft = FeedParserHelper.ParseFeed("https://www.tvn24.pl/najnowsze.xml");
         }
     }
 }
