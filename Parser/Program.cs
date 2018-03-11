@@ -3,10 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using HtmlAgilityPack;
-using System.Xml;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
-using System.IO;
 
 namespace Parser
 {
