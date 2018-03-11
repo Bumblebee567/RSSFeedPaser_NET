@@ -8,15 +8,37 @@ namespace Parser
 {
     class DatabaseHelper
     {
-        public static void AddChannelsToDatabase(string url)
+        public static void AddChannelsToDatabase(string websiteUrl)
         {
-            
+            var channelTitles = FeedParserHelper.GetChannelTitles(websiteUrl);
+            var channelUrls = FeedParserHelper.GetChannelUrls(websiteUrl);
+            List<Channel> channelsToAdd = new List<Channel>();
+            bool checker;
+            using (var context = new RSSFeedDatabaseModel())
+            {
+                for (int i = 0; i < channelUrls.Count; i++)
+                {
+                    checker = IsChannelInDatabase(channelUrls[i]);
+                    if(checker == true)
+                    {
+                        continue;
+                    }
+                    else
+                    {
+                        channelsToAdd.Add(new Channel
+                        {
+                            Address = channelUrls[i],
+                            Title = channelTitles[i]
+                        });
+                    }
+                }
+                if (channelsToAdd.Count != 0)
+                {
+                    context.Channel.AddRange(channelsToAdd);
+                }
+            }
         }
-        public static void AddFeedsToDatabase(string channelUrl)
-        {
-
-        }
-        public static bool IsChannelInDatabase(string channelUrl)
+        private static bool IsChannelInDatabase(string channelUrl)
         {
             bool checker;
             using (var context = new RSSFeedDatabaseModel())
@@ -32,7 +54,11 @@ namespace Parser
             }
             return checker;
         }
-        public static bool IsFeedInDatabase(string feedUrl, string channelUrl)
+        public static void AddFeedsToDatabase(string channelUrl)
+        {
+
+        }
+        private static bool IsFeedInDatabase(string feedUrl, string channelUrl)
         {
             bool checker = true;
             using (var context = new RSSFeedDatabaseModel())
@@ -41,7 +67,7 @@ namespace Parser
                 var feedsOnChannel = context.Feed.Where(x => x.ChannelID == channel.ChannelID);
                 foreach (var feed in feedsOnChannel)
                 {
-                    if(feed.Link == feedUrl)
+                    if (feed.Link == feedUrl)
                     {
                         checker = false;
                         break;

@@ -34,7 +34,6 @@ namespace Parser
                 var img = Regex.Match(descH, @"<.+?>");
                 var image = GetImageDirectUrl(img.ToString());
             }
-            Console.WriteLine(sb.ToString());
         }
         private static string GetImageDirectUrl(string imageHtml)
         {
@@ -47,7 +46,7 @@ namespace Parser
                 .Replace("&amp;", "&");
             return str;
         }
-        public static List<string> GetChannelNames(string url)
+        public static List<string> GetChannelTitles(string url)
         {
             var web = new HtmlWeb();
             var doc = web.Load(url);
