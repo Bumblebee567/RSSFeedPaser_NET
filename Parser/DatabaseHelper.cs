@@ -8,21 +8,33 @@ namespace Parser
 {
     class DatabaseHelper
     {
-        public static void SaveChannelsToDatabase()
+        public static void AddChannelsToDatabase()
         {
             
         }
-        public static void SaveFeedsToDatabase(string channelUrl)
+        public static void AddFeedsToDatabase(string channelUrl)
         {
 
         }
         public static bool CheckIfChannelIsInDatabase(string channelUrl)
         {
-            return false;
+            bool checker;
+            using (var context = new RSSFeedDatabaseModel())
+            {
+                if (context.Channel.Any(x => x.Address == channelUrl) == true)
+                {
+                    checker = true;
+                }
+                else
+                {
+                    checker = false;
+                }
+            }
+            return checker;
         }
         public static bool CheckIfFeedIsInDatabase(string feedUrl, string channelUrl)
         {
-            bool checker = false;
+            bool checker = true;
             using (var context = new RSSFeedDatabaseModel())
             {
                 var channel = context.Channel.Where(x => x.Address == channelUrl).First();
@@ -31,7 +43,7 @@ namespace Parser
                 {
                     if(feed.Link == feedUrl)
                     {
-                        checker = true;
+                        checker = false;
                         break;
                     }
                 }
