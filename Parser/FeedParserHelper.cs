@@ -14,7 +14,6 @@ namespace Parser
         {
             XDocument rssDocument = XDocument.Load(channelUrl);
             var feeds = rssDocument.Descendants("item");
-            StringBuilder sb = new StringBuilder();
             foreach (var feed in feeds)
             {
                 var title = feed.Element("title").Value;

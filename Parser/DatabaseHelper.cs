@@ -54,11 +54,17 @@ namespace Parser
             }
             return checker;
         }
-        public static void AddFeedsToDatabase(string channelUrl)
+        public static void AddFeedsToDatabase()
         {
+            using (var context = new RSSFeedDatabaseModel())
+            {
+                foreach (var channel in context.Channel)
+                {
 
+                }
+            }
         }
-        private static bool IsFeedInDatabase(string feedUrl, string channelUrl)
+        public static bool IsFeedInDatabase(string feedUrl, string channelUrl)
         {
             bool checker = true;
             using (var context = new RSSFeedDatabaseModel())
