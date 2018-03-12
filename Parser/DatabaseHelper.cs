@@ -18,23 +18,27 @@ namespace Parser
             {
                 for (int i = 0; i < channelUrls.Count; i++)
                 {
-                    checker = IsChannelInDatabase(channelUrls[i]);
-                    if(checker == true)
+                    if (i != 4)
                     {
-                        continue;
-                    }
-                    else
-                    {
-                        channelsToAdd.Add(new Channel
+                        checker = IsChannelInDatabase(channelUrls[i]);
+                        if (checker == true)
                         {
-                            Address = channelUrls[i],
-                            Title = channelTitles[i]
-                        });
+                            continue;
+                        }
+                        else
+                        {
+                            channelsToAdd.Add(new Channel
+                            {
+                                Address = channelUrls[i],
+                                Title = channelTitles[i]
+                            });
+                        }
                     }
                 }
                 if (channelsToAdd.Count != 0)
                 {
                     context.Channel.AddRange(channelsToAdd);
+                    context.SaveChanges();
                 }
             }
         }
@@ -68,6 +72,7 @@ namespace Parser
                     }
                     feedsToAdd.Clear();
                 }
+                context.SaveChanges();
             }
         }
         public static bool IsFeedInDatabase(string feedUrl, string channelUrl)
