@@ -66,7 +66,7 @@ namespace Parser
                 foreach (var channel in context.Channel)
                 {
                     feedsToAdd = FeedParserHelper.ParseFeed(channel.Address);
-                    for (int i = feedsToAdd.Count - 1; i >= 0; i++)
+                    for (int i = feedsToAdd.Count - 1; i >= 0; i--)
                     {
                         channel.Feed.Add(feedsToAdd[i]);
                     }
@@ -77,7 +77,6 @@ namespace Parser
         }
         public static bool IsFeedInDatabase(string feedUrl, string channelUrl)
         {
-            bool checker = true;
             using (var context = new RSSFeedDatabaseModel())
             {
                 var channel = context.Channel.Where(x => x.Address == channelUrl).First();
@@ -86,12 +85,11 @@ namespace Parser
                 {
                     if (feed.Link == feedUrl)
                     {
-                        checker = false;
-                        break;
+                        return true;
                     }
                 }
             }
-            return checker;
+            return false;
         }
     }
 }

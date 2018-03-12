@@ -24,15 +24,27 @@ namespace Parser
                     continue;
                 }
                 var title = feed.Element("title").Value;
-                string pubdate = "";
+                if(title == "")
+                {
+                    title = "brak tytułu";
+                }
+                string pubdate = "brak daty";
                 if (feed.Element("pubDate") != null)
                 {
                     pubdate = feed.Element("pubDate").Value;
                 }
                 var descirptionInHtmlCode = feed.Element("description").Value;
                 var description = Regex.Replace(descirptionInHtmlCode, @"<.+?>", String.Empty).TrimStart();
+                if(description == "")
+                {
+                    description = "brak opisu";
+                }
                 var imageInHtmlCode = Regex.Match(descirptionInHtmlCode, @"<.+?>");
                 var image = GetImageDirectUrl(imageInHtmlCode.ToString());
+                if(image == "")
+                {
+                    image = "brak zdjęcia";
+                }
                 parsedFeeds.Add(new Feed
                 {
                     Title = title,
