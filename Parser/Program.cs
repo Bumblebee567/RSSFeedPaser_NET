@@ -18,7 +18,7 @@ namespace Parser
             refreshTimer.Elapsed += RefreshTimer_Elapsed;
             refreshTimer.Interval = 300000;
             refreshTimer.Start();
-            Console.ReadKey();
+            //Console.ReadKey();
         }
         private static void RefreshTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
