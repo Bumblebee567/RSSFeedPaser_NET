@@ -6,6 +6,8 @@ using HtmlAgilityPack;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
 using System.Timers;
+using System.Threading.Tasks;
+using System.Threading;
 
 namespace Parser
 {
@@ -14,17 +16,13 @@ namespace Parser
         public const string url = "https://www.tvn24.pl/rss.html";
         static void Main(string[] args)
         {
-            Timer refreshTimer = new Timer();
-            refreshTimer.Elapsed += RefreshTimer_Elapsed;
-            refreshTimer.Interval = 30000;
-            refreshTimer.Start();
-            Console.ReadKey();
-        }
-        private static void RefreshTimer_Elapsed(object sender, ElapsedEventArgs e)
-        {
-            DatabaseHelper.AddChannelsToDatabase(url);
-            DatabaseHelper.AddFeedsToDatabase();
-            Console.WriteLine("done");
+            while (true)
+            {
+                Thread.Sleep(300000);
+                //DatabaseHelper.AddChannelsToDatabase(url);
+                //DatabaseHelper.AddFeedsToDatabase();
+                Console.WriteLine("done");
+            }
         }
     }
 }
