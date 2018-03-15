@@ -12,49 +12,64 @@ namespace Parser
     {
         public static List<Feed> ParseFeed(string channelUrl)
         {
-            List<Feed> parsedFeeds = new List<Feed>();
-            XDocument rssDocument = XDocument.Load(channelUrl);
-            var feeds = rssDocument.Descendants("item");
-            foreach (var feed in feeds)
+            XDocument rssDocument;
+            try
             {
-                var link = feed.Element("link").Value;
-                bool databaseChecker = DatabaseHelper.IsFeedInDatabase(link, channelUrl);
-                if (databaseChecker == true)
-                {
-                    continue;
-                }
-                var title = feed.Element("title").Value;
-                if(title == "")
-                {
-                    title = "brak tytułu";
-                }
-                string pubdate = "brak daty";
-                if (feed.Element("pubDate") != null)
-                {
-                    pubdate = feed.Element("pubDate").Value;
-                }
-                var descirptionInHtmlCode = feed.Element("description").Value;
-                var description = Regex.Replace(descirptionInHtmlCode, @"<.+?>", String.Empty).TrimStart();
-                if(description == "")
-                {
-                    description = "brak opisu";
-                }
-                var imageInHtmlCode = Regex.Match(descirptionInHtmlCode, @"<.+?>");
-                var image = GetImageDirectUrl(imageInHtmlCode.ToString());
-                if(image == "")
-                {
-                    image = "brak zdjęcia";
-                }
-                parsedFeeds.Add(new Feed
-                {
-                    Title = title,
-                    Link = link,
-                    Date = pubdate,
-                    Description = description,
-                    Imagelink = image
-                });
+                rssDocument = XDocument.Load(channelUrl);
             }
-            return parsedFeeds;
+            catch (Exception)
+            {
+                rssDocument = null;
+            }
+            if (rssDocument != null)
+            {
+                List<Feed> parsedFeeds = new List<Feed>();
+                var feeds = rssDocument.Descendants("item");
+                foreach (var feed in feeds)
+                {
+                    var link = feed.Element("link").Value;
+                    bool databaseChecker = DatabaseHelper.IsFeedInDatabase(link, channelUrl);
+                    if (databaseChecker == true)
+                    {
+                        continue;
+                    }
+                    var title = feed.Element("title").Value;
+                    if (title == "")
+                    {
+                        title = "brak tytułu";
+                    }
+                    string pubdate = "brak daty";
+                    if (feed.Element("pubDate") != null)
+                    {
+                        pubdate = feed.Element("pubDate").Value;
+                    }
+                    var descirptionInHtmlCode = feed.Element("description").Value;
+                    var description = Regex.Replace(descirptionInHtmlCode, @"<.+?>", String.Empty).TrimStart();
+                    if (description == "")
+                    {
+                        description = "brak opisu";
+                    }
+                    var imageInHtmlCode = Regex.Match(descirptionInHtmlCode, @"<.+?>");
+                    var image = GetImageDirectUrl(imageInHtmlCode.ToString());
+                    if (image == "")
+                    {
+                        image = "brak zdjęcia";
+                    }
+                    parsedFeeds.Add(new Feed
+                    {
+                        Title = title,
+                        Link = link,
+                        Date = pubdate,
+                        Description = description,
+                        Imagelink = image
+                    });
+                }
+                return parsedFeeds;
+            }
+            else
+            {
+                return null;
+            }
         }
         private static string GetImageDirectUrl(string imageHtml)
         {

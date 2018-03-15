@@ -19,9 +19,8 @@ namespace Parser
             while (true)
             {
                 Thread.Sleep(300000);
-                //DatabaseHelper.AddChannelsToDatabase(url);
-                //DatabaseHelper.AddFeedsToDatabase();
-                Console.WriteLine("done");
+                DatabaseHelper.AddChannelsToDatabase(url);
+                DatabaseHelper.AddFeedsToDatabase();
             }
         }
     }

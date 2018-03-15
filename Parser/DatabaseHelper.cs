@@ -18,21 +18,18 @@ namespace Parser
             {
                 for (int i = 0; i < channelUrls.Count; i++)
                 {
-                    if (i != 4)
+                    checker = IsChannelInDatabase(channelUrls[i]);
+                    if (checker == true)
                     {
-                        checker = IsChannelInDatabase(channelUrls[i]);
-                        if (checker == true)
+                        continue;
+                    }
+                    else
+                    {
+                        channelsToAdd.Add(new Channel
                         {
-                            continue;
-                        }
-                        else
-                        {
-                            channelsToAdd.Add(new Channel
-                            {
-                                Address = channelUrls[i],
-                                Title = channelTitles[i]
-                            });
-                        }
+                            Address = channelUrls[i],
+                            Title = channelTitles[i]
+                        });
                     }
                 }
                 if (channelsToAdd.Count != 0)
@@ -66,11 +63,14 @@ namespace Parser
                 foreach (var channel in context.Channel)
                 {
                     feedsToAdd = FeedParserHelper.ParseFeed(channel.Address);
-                    for (int i = feedsToAdd.Count - 1; i >= 0; i--)
+                    if (feedsToAdd != null)
                     {
-                        channel.Feed.Add(feedsToAdd[i]);
+                        for (int i = feedsToAdd.Count - 1; i >= 0; i--)
+                        {
+                            channel.Feed.Add(feedsToAdd[i]);
+                        }
+                        feedsToAdd.Clear();
                     }
-                    feedsToAdd.Clear();
                 }
                 context.SaveChanges();
             }
