@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using NUnit.Framework;
+using NUnit.Framework.Constraints;
 using Parser;
 
 namespace RSSReader
@@ -30,7 +31,7 @@ namespace RSSReader
             {
                 var target = new Feed();
                 var items = target.ChannelID;
-                Assert.IsNull(items);
+                Assert.IsNotNull(items);
 
             }
 
@@ -58,7 +59,7 @@ namespace RSSReader
             {
                 var target = new Feed();
                 var items = target.FeedID;
-                Assert.IsNull(items);
+                Assert.IsNotNull(items);
 
             }
 
@@ -87,6 +88,23 @@ namespace RSSReader
                 var items = target.Title;
                 Assert.IsNull(items);
 
+            }
+
+            [TestCase]
+            public void CheckIf_Channel_HaveRequiredTitleAndAddress()
+            {
+                int result = 0;
+                var target = new Channel();
+                var item1 = target.Title;
+                var item2 = target.Address;
+
+                SomeItemsConstraint condition1 = Contains.Item(item1);
+                SomeItemsConstraint condition2 = Contains.Item(item2);
+                if ((condition1 != null) && condition2 != null)
+                {
+                    result = 1;
+                }
+                Assert.That(result, Is.EqualTo(1));
             }
         }
     }

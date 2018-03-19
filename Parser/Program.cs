@@ -16,6 +16,8 @@ namespace Parser
         public const string url = "https://www.tvn24.pl/rss.html";
         static void Main(string[] args)
         {
+            DatabaseHelper.AddChannelsToDatabase(url);
+            DatabaseHelper.AddFeedsToDatabase();
             while (true)
             {
                 Thread.Sleep(300000);
