@@ -13,6 +13,30 @@ namespace RSSReader
     class UnitTests
     {
         [TestFixture]
+        class UnitTestExamplesForIDs
+        {
+            [TestCase]
+            // should be failed
+            public void CheckIf_ChannelID_HaveID()
+            {
+                var target = new Feed();
+                var items = target.ChannelID;
+                Assert.IsNotNull(items, " shouldn't be a null.");
+
+            }
+
+            [TestCase]
+            // should be failed
+            public void CheckIf_FeedID_HaveFeedID()
+            {
+                var target = new Feed();
+                var items = target.FeedID;
+                Assert.IsNotNull(items, " shouldn't be a null.");
+
+            }
+        }
+
+        [TestFixture]
         class UnitTestExamples
         {
 
@@ -21,17 +45,7 @@ namespace RSSReader
             {
                 var target = new Feed();
                 var items = target.Channel;
-                Assert.IsNull(items," should be a null.");
-
-            }
-
-            [TestCase]
-            // should be failed
-            public void CheckIf_ChannelID_HaveID()
-            {
-                var target = new Feed();
-                var items = target.ChannelID;
-                Assert.IsNotNull(items, " shouldn't be a null.");
+                Assert.IsNull(items, " should be a null.");
 
             }
 
@@ -54,16 +68,6 @@ namespace RSSReader
             }
 
             [TestCase]
-            // should be failed
-            public void CheckIf_FeedID_HaveFeedID()
-            {
-                var target = new Feed();
-                var items = target.FeedID;
-                Assert.IsNotNull(items, " shouldn't be a null.");
-
-            }
-
-            [TestCase]
             public void CheckIf_Imagelink_HaveImagelink()
             {
                 var target = new Feed();
@@ -80,7 +84,7 @@ namespace RSSReader
                 Assert.IsNull(items, " should be a null.");
 
             }
-            
+
             [TestCase]
             public void CheckIf_Title_HaveTitle()
             {
